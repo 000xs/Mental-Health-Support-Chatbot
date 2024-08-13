@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Image from "next/image";
 import { Inter } from "next/font/google";
 import { CiSettings } from "react-icons/ci";
 import { BsSend } from "react-icons/bs";
+import ReactMarkdown from 'react-markdown';  // Import ReactMarkdown for text formatting
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,13 +23,19 @@ export default function Home() {
       },
       body: JSON.stringify({ userInput: input }),
     });
-    setInput("")
+    setInput("");
 
     const data = await response.json();
     const botMessage = { role: "bot", text: data.response };
     setChat([...chat, userMessage, botMessage]);
 
-    setInput("");
+    
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      sendMessage();
+    }
   };
 
   return (
@@ -49,12 +55,12 @@ export default function Home() {
           </li>
         </div>
 
-        <div className="content h-[60vh] scroll relative w-[440px] px-5 py-3">
+        <div className="content h-[60vh] overflow-y-scroll relative w-[440px] px-5 py-3">
           {chat.map((message, index) => (
-            <div key={index} className={`message ${message.role === "user" ? "text-right" : "text-left"}`}>
-              <p className={`px-4 py-2 ${message.role === "user" ? "bg-blue-200" : "bg-gray-200"} rounded-lg inline-block`}>
-                {message.text}
-              </p>
+            <div key={index} className={`message mb-2 ${message.role === "user" ? "text-right" : "text-left"}`}>
+              <div className={`px-4 py-2 ${message.role === "user" ? "bg-blue-200" : "bg-gray-200"} rounded-lg inline-block`}>
+                <ReactMarkdown>{message.text}</ReactMarkdown> {/* Render formatted text */}
+              </div>
             </div>
           ))}
         </div>
@@ -68,8 +74,9 @@ export default function Home() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              onKeyPress={handleKeyPress}  // Handle "Enter" key press
               placeholder="Type a message..."
-              className="bg-[#E8EEF2] w-[300px] placeholder:px-1 rounded-md"
+              className="bg-[#E8EEF2] w-[300px] placeholder:px-2 rounded-md"
             />
             <button
               onClick={sendMessage}
@@ -79,7 +86,7 @@ export default function Home() {
             </button>
           </div>
         </div>
-        <p className="py-1 font-semibold text-gray-500 text-sm">End-to-encrypted</p>
+        <p className="py-1 font-semibold text-gray-500 text-sm">End-to-end encrypted</p>
       </div>
     </main>
   );
