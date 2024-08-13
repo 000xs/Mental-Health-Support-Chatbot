@@ -13,6 +13,9 @@ export default function Home() {
   const sendMessage = async () => {
     if (!input.trim()) return;
 
+    const inputText = input
+    setInput("");
+
     const userMessage = { role: "user", text: input };
     setChat([...chat, userMessage]);
 
@@ -21,9 +24,9 @@ export default function Home() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ userInput: input }),
+      body: JSON.stringify({ userInput: inputText }),
     });
-    setInput("");
+    
 
     const data = await response.json();
     const botMessage = { role: "bot", text: data.response };
