@@ -13,7 +13,7 @@ export default function Home() {
   const [theme, setTheme] = useState("light"); // Default to light mode
   const [notifications, setNotifications] = useState(true); // Default to notifications enabled
   const [privacy, setPrivacy] = useState(true); // Default to privacy enabled
-  const [showPrivacyPopup, setShowPrivacyPopup] = useState(false); // State to manage privacy popup visibility
+  const [activeTab, setActiveTab] = useState('settings'); // State to manage the active tab
 
   // Toggle dark mode class
   useEffect(() => {
@@ -119,75 +119,90 @@ export default function Home() {
         {/* Settings Interface */}
         {settingsOpen && (
           <div className="settings-panel absolute top-0 right-0 mt-16 mr-16 w-[300px] p-5 bg-gray-100 dark:bg-gray-700 dark:text-white rounded-lg shadow-lg">
-            <h2 className="text-xl font-bold mb-4">Settings</h2>
-            
-            <div className="mb-4">
-              <label className="text-sm font-medium">Theme</label>
-              <select
-                value={theme}
-                onChange={(e) => setTheme(e.target.value)}
-                className="w-full mt-2 p-2 border rounded bg-white dark:bg-gray-800 dark:text-white"
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Settings</h2>
+              <button
+                onClick={() => setSettingsOpen(false)}
+                className="text-gray-500 dark:text-gray-300"
               >
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-              </select>
+                X
+              </button>
             </div>
             
-            <div className="mb-4">
-              <label className="text-sm font-medium">Notifications</label>
-              <input
-                type="checkbox"
-                checked={notifications}
-                onChange={() => setNotifications(!notifications)}
-                className="ml-2"
-              />
+            <div className="flex justify-around mb-4">
+              <button
+                className={`px-4 py-2 rounded ${activeTab === 'settings' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-800'}`}
+                onClick={() => setActiveTab('settings')}
+              >
+                Settings
+              </button>
+              <button
+                className={`px-4 py-2 rounded ${activeTab === 'privacy' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-800'}`}
+                onClick={() => setActiveTab('privacy')}
+              >
+                Privacy
+              </button>
             </div>
 
-            <div className="mb-4">
-              <label className="text-sm font-medium">Privacy</label>
-              <input
-                type="checkbox"
-                checked={privacy}
-                onChange={() => setPrivacy(!privacy)}
-                className="ml-2"
-              />
-              <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Enable privacy mode</span>
-            </div>
+            {activeTab === 'settings' && (
+              <div>
+                <div className="mb-4">
+                  <label className="text-sm font-medium">Theme</label>
+                  <select
+                    value={theme}
+                    onChange={(e) => setTheme(e.target.value)}
+                    className="w-full mt-2 p-2 border rounded bg-white dark:bg-gray-800 dark:text-white"
+                  >
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                  </select>
+                </div>
+                
+                <div className="mb-4">
+                  <label className="text-sm font-medium">Notifications</label>
+                  <input
+                    type="checkbox"
+                    checked={notifications}
+                    onChange={() => setNotifications(!notifications)}
+                    className="ml-2"
+                  />
+                </div>
 
-            <button
-              onClick={() => setSettingsOpen(false)}
-              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
-            >
-              Close Settings
-            </button>
+                <div className="mb-4">
+                  <label className="text-sm font-medium">Privacy</label>
+                  <input
+                    type="checkbox"
+                    checked={privacy}
+                    onChange={() => setPrivacy(!privacy)}
+                    className="ml-2"
+                  />
+                  <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Enable privacy mode</span>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'privacy' && (
+              <div className="text-center">
+                <h3 className="text-xl font-bold mb-4">Privacy Notice</h3>
+                <p className="text-gray-700 dark:text-gray-300 mb-4">
+                  Your messages are end-to-end encrypted. We prioritize your privacy and ensure that nothing is saved or stored. All conversations are private and secure.
+                </p>
+              </div>
+            )}
+
           </div>
         )}
 
         {/* End-to-End Encryption Text */}
         <p
           className="py-1 font-semibold text-gray-500 dark:text-gray-400 text-sm cursor-pointer"
-          onClick={() => setShowPrivacyPopup(true)}
+          onClick={() => {
+            setSettingsOpen(true);
+            setActiveTab('privacy');
+          }}
         >
           End-to-end encrypted
         </p>
-
-        {/* Privacy Popup */}
-        {showPrivacyPopup && (
-          <div className="privacy-popup fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-lg max-w-md text-center">
-              <h3 className="text-xl font-bold mb-4">Privacy Notice</h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                Your messages are end-to-end encrypted. We prioritize your privacy and ensure that nothing is saved or stored. All conversations are private and secure.
-              </p>
-              <button
-                onClick={() => setShowPrivacyPopup(false)}
-                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        )}
 
       </div>
     </main>
