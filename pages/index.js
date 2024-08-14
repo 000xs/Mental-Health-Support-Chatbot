@@ -11,6 +11,9 @@ export default function Home() {
   const [chat, setChat] = useState([]);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [theme, setTheme] = useState("light"); // Default to light mode
+  const [notifications, setNotifications] = useState(true); // Default to notifications enabled
+  const [privacy, setPrivacy] = useState(true); // Default to privacy enabled
+  const [showPrivacyPopup, setShowPrivacyPopup] = useState(false); // State to manage privacy popup visibility
 
   // Toggle dark mode class
   useEffect(() => {
@@ -117,6 +120,7 @@ export default function Home() {
         {settingsOpen && (
           <div className="settings-panel absolute top-0 right-0 mt-16 mr-16 w-[300px] p-5 bg-gray-100 dark:bg-gray-700 dark:text-white rounded-lg shadow-lg">
             <h2 className="text-xl font-bold mb-4">Settings</h2>
+            
             <div className="mb-4">
               <label className="text-sm font-medium">Theme</label>
               <select
@@ -128,10 +132,28 @@ export default function Home() {
                 <option value="dark">Dark</option>
               </select>
             </div>
+            
             <div className="mb-4">
               <label className="text-sm font-medium">Notifications</label>
-              <input type="checkbox" className="ml-2" />
+              <input
+                type="checkbox"
+                checked={notifications}
+                onChange={() => setNotifications(!notifications)}
+                className="ml-2"
+              />
             </div>
+
+            <div className="mb-4">
+              <label className="text-sm font-medium">Privacy</label>
+              <input
+                type="checkbox"
+                checked={privacy}
+                onChange={() => setPrivacy(!privacy)}
+                className="ml-2"
+              />
+              <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Enable privacy mode</span>
+            </div>
+
             <button
               onClick={() => setSettingsOpen(false)}
               className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
@@ -141,7 +163,32 @@ export default function Home() {
           </div>
         )}
 
-        <p className="py-1 font-semibold text-gray-500 dark:text-gray-400 text-sm">End-to-end encrypted</p>
+        {/* End-to-End Encryption Text */}
+        <p
+          className="py-1 font-semibold text-gray-500 dark:text-gray-400 text-sm cursor-pointer"
+          onClick={() => setShowPrivacyPopup(true)}
+        >
+          End-to-end encrypted
+        </p>
+
+        {/* Privacy Popup */}
+        {showPrivacyPopup && (
+          <div className="privacy-popup fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-lg max-w-md text-center">
+              <h3 className="text-xl font-bold mb-4">Privacy Notice</h3>
+              <p className="text-gray-700 dark:text-gray-300 mb-4">
+                Your messages are end-to-end encrypted. We prioritize your privacy and ensure that nothing is saved or stored. All conversations are private and secure.
+              </p>
+              <button
+                onClick={() => setShowPrivacyPopup(false)}
+                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
       </div>
     </main>
   );
